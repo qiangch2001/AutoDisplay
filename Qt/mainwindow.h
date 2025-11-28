@@ -16,22 +16,32 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    
+
 private slots:
+
     void on_RedButton_up_clicked();
-    
+
     void on_RedButton_down_clicked();
-    
+
     void on_GreenButton_up_clicked();
-    
+
     void on_GreenButton_down_clicked();
-    
+
     void on_BlueButton_up_clicked();
-    
+
     void on_BlueButton_down_clicked();
-    
-    void setRgbValues(int r, int g, int b);
+
+
 private:
     Ui::MainWindow *ui;
+
+
+    int R = 127;
+    int G = 127;
+    int B = 127;
+
+    void updateRedPanel();
+    void updateGreenPanel();
+    void updateBluePanel();
 };
 #endif // MAINWINDOW_H
