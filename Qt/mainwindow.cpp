@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include <QtGlobal>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -21,7 +20,8 @@ MainWindow::~MainWindow()
 void MainWindow::updateRedPanel()
 {
     // set threshold for the brightness value
-    R = qBound(0, R, 255);
+    if (R < 0)   R = 0;
+    if (R > 255) R = 255;
 
     // set background color
     QString style =
@@ -33,7 +33,8 @@ void MainWindow::updateRedPanel()
 
 void MainWindow::updateGreenPanel()
 {
-    G = qBound(G, 0, 255);
+    if (G < 0)   G = 0;
+    if (G > 255) G = 255;
 
     QString style =
         QString("background-color: rgba(0, 255, 0, %1);").arg(G);
@@ -43,7 +44,8 @@ void MainWindow::updateGreenPanel()
 
 void MainWindow::updateBluePanel()
 {
-    B = qBound(B, 0, 255);
+    if (B < 0)   B = 0;
+    if (B > 255) B = 255;
 
     QString style =
         QString("background-color: rgba(0, 0, 255, %1);").arg(B);
