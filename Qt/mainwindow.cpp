@@ -10,11 +10,68 @@ MainWindow::MainWindow(QWidget *parent)
     updateRedPanel();
     updateGreenPanel();
     updateBluePanel();
+
+    // Default UI page
+    ui->stackedWidget->setCurrentWidget(ui->page_config);
+
+    // Setup a timer to periodically listen to Page Switching signal
+    sensorTimer = new QTimer(this);
+
+    // Mannually connect timercallback to the action: readSensorValue()
+    connect(sensorTimer, &QTimer::timeout, this, [this]() {
+
+        int v = readSensorValue();
+
+        if (v != lastSensorValue) {
+            lastSensorValue = v;
+            handleSensorValue(v);
+        }
+    });
+
+
+    /* Test for page switching function */
+    // connect(sensorTimer, &QTimer::timeout, this, [this]() {
+    //     static int fake = 0;
+    //     fake = 1 - fake;
+    //     handleSensorValue(fake);
+    // });
+
+    sensorTimer->start(100); //Callback every 100ms
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+int MainWindow::readSensorValue()
+{
+    // Check signal value
+    QFile f("/sys/class/gpio/gpio60/value");
+
+    if (!f.open(QIODevice::ReadOnly)) {
+        qDebug() << "Failed to open sensor file";
+        return 0;
+    }
+
+    QByteArray data = f.readAll().trimmed();
+    if (!data.isEmpty() && data[0] == '1')
+        return 1;
+    else
+        return 0;
+}
+
+
+void MainWindow::handleSensorValue(int v)
+{
+    if (v == 1) {
+        // Change to display page
+        ui->stackedWidget->setCurrentWidget(ui->page_display);
+    } else {
+        // Change to config page
+        ui->stackedWidget->setCurrentWidget(ui->page_config);
+    }
 }
 
 void MainWindow::updateRedPanel()

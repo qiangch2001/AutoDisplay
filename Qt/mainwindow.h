@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTimer>
+#include <QFile>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -35,13 +37,16 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
+    QTimer * sensorTimer;
+    int R = 127; // Default Red
+    int G = 127; // Default Green
+    int B = 127; // Default Blue
+    int lastSensorValue = -1; // Sensor status indicator
 
-    int R = 127;
-    int G = 127;
-    int B = 127;
-
-    void updateRedPanel();
-    void updateGreenPanel();
-    void updateBluePanel();
+    int readSensorValue();
+    void handleSensorValue(int v); // UI Page manager
+    void updateRedPanel(); // Update brightness value R
+    void updateGreenPanel(); // Update brightness value G
+    void updateBluePanel(); // Update brightness value B
 };
 #endif // MAINWINDOW_H
