@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QFile>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

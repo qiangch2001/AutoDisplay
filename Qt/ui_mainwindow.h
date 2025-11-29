@@ -17,6 +17,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -25,8 +26,10 @@ class Ui_MainWindow
 {
 public:
     QWidget *Widget;
+    QStackedWidget *stackedWidget;
+    QWidget *page_config;
     QGroupBox *groupBox;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QHBoxLayout *horizontalLayout;
     QWidget *widget_r;
     QPushButton *RedButton_up;
@@ -40,6 +43,7 @@ public:
     QPushButton *BlueButton_up;
     QPushButton *BlueButton_down;
     QLabel *brightness_b;
+    QWidget *page_display;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -49,18 +53,23 @@ public:
         Widget = new QWidget(MainWindow);
         Widget->setObjectName(QString::fromUtf8("Widget"));
         Widget->setStyleSheet(QString::fromUtf8(""));
-        groupBox = new QGroupBox(Widget);
+        stackedWidget = new QStackedWidget(Widget);
+        stackedWidget->setObjectName(QString::fromUtf8("stackedWidget"));
+        stackedWidget->setGeometry(QRect(0, 0, 480, 272));
+        page_config = new QWidget();
+        page_config->setObjectName(QString::fromUtf8("page_config"));
+        groupBox = new QGroupBox(page_config);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         groupBox->setGeometry(QRect(0, 0, 480, 272));
         groupBox->setStyleSheet(QString::fromUtf8("background-color:rgb(0, 0, 0);"));
-        widget = new QWidget(groupBox);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(0, 0, 481, 281));
-        horizontalLayout = new QHBoxLayout(widget);
+        layoutWidget = new QWidget(groupBox);
+        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
+        layoutWidget->setGeometry(QRect(0, 0, 481, 281));
+        horizontalLayout = new QHBoxLayout(layoutWidget);
         horizontalLayout->setSpacing(0);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
-        widget_r = new QWidget(widget);
+        widget_r = new QWidget(layoutWidget);
         widget_r->setObjectName(QString::fromUtf8("widget_r"));
         widget_r->setStyleSheet(QString::fromUtf8("background-color:rgba(255, 0, 0, 127);"));
         RedButton_up = new QPushButton(widget_r);
@@ -72,8 +81,7 @@ public:
 "    x1:0, y1:0,\n"
 "    x2:0, y2:1,\n"
 "    stop:0   rgba(255, 0,   0,   255),\n"
-"    stop:0.5 rgba(0,   255, 0,   255),\n"
-"    stop:1   rgba(0,   0,   255, 255)\n"
+"    stop:1   rgba(255,   0,   0, 0)\n"
 ");\n"
 "\n"
 "\n"
@@ -88,9 +96,8 @@ public:
 "    spread:pad,\n"
 "    x1:0, y1:0,\n"
 "    x2:0, y2:1,\n"
-"    stop:0   rgba(255, 0,   0,   255),\n"
-"    stop:0.5 rgba(0,   255, 0,   255),\n"
-"    stop:1   rgba(0,   0,   255, 255)\n"
+"    stop:0   rgba(255, 0,   0,   0),\n"
+"    stop:1   rgba(255,   0,   0, 255)\n"
 ");\n"
 "\n"
 "\n"
@@ -110,7 +117,7 @@ public:
 
         horizontalLayout->addWidget(widget_r);
 
-        widget_g = new QWidget(widget);
+        widget_g = new QWidget(layoutWidget);
         widget_g->setObjectName(QString::fromUtf8("widget_g"));
         widget_g->setStyleSheet(QString::fromUtf8("background: rgba(0, 255, 0,127)"));
         GreenButton_up = new QPushButton(widget_g);
@@ -121,9 +128,8 @@ public:
 "    spread:pad,\n"
 "    x1:0, y1:0,\n"
 "    x2:0, y2:1,\n"
-"    stop:0   rgba(255, 0,   0,   255),\n"
-"    stop:0.5 rgba(0,   255, 0,   255),\n"
-"    stop:1   rgba(0,   0,   255, 255)\n"
+"    stop:0 rgba(0,   255, 0,   255),\n"
+"    stop:1   rgba(0,   255, 0,  0)\n"
 ");\n"
 "\n"
 ""));
@@ -135,11 +141,9 @@ public:
 "    spread:pad,\n"
 "    x1:0, y1:0,\n"
 "    x2:0, y2:1,\n"
-"    stop:0   rgba(255, 0,   0,   255),\n"
-"    stop:0.5 rgba(0,   255, 0,   255),\n"
-"    stop:1   rgba(0,   0,   255, 255)\n"
-");\n"
-""));
+"    stop:0 rgba(0,   255, 0,   0),\n"
+"    stop:1   rgba(0,   255, 0,  255)\n"
+");"));
         GreenButton_down->setIcon(icon1);
         brightness_g = new QLabel(widget_g);
         brightness_g->setObjectName(QString::fromUtf8("brightness_g"));
@@ -151,7 +155,7 @@ public:
 
         horizontalLayout->addWidget(widget_g);
 
-        widget_b = new QWidget(widget);
+        widget_b = new QWidget(layoutWidget);
         widget_b->setObjectName(QString::fromUtf8("widget_b"));
         widget_b->setStyleSheet(QString::fromUtf8("background-color:rgba(0, 0, 255, 127);"));
         BlueButton_up = new QPushButton(widget_b);
@@ -162,9 +166,8 @@ public:
 "    spread:pad,\n"
 "    x1:0, y1:0,\n"
 "    x2:0, y2:1,\n"
-"    stop:0   rgba(255, 0,   0,   255),\n"
-"    stop:0.5 rgba(0,   255, 0,   255),\n"
-"    stop:1   rgba(0,   0,   255, 255)\n"
+"    stop:0   rgba(0, 0,   255,   255),\n"
+"    stop:1   rgba(0,   0,   255, 0)\n"
 ");\n"
 ""));
         BlueButton_up->setIcon(icon);
@@ -175,8 +178,7 @@ public:
 "    spread:pad,\n"
 "    x1:0, y1:0,\n"
 "    x2:0, y2:1,\n"
-"    stop:0   rgba(255, 0,   0,   255),\n"
-"    stop:0.5 rgba(0,   255, 0,   255),\n"
+"    stop:0   rgba(0, 0,   255,   0),\n"
 "    stop:1   rgba(0,   0,   255, 255)\n"
 ");\n"
 ""));
@@ -191,9 +193,16 @@ public:
 
         horizontalLayout->addWidget(widget_b);
 
+        stackedWidget->addWidget(page_config);
+        page_display = new QWidget();
+        page_display->setObjectName(QString::fromUtf8("page_display"));
+        stackedWidget->addWidget(page_display);
         MainWindow->setCentralWidget(Widget);
 
         retranslateUi(MainWindow);
+
+        stackedWidget->setCurrentIndex(0);
+
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
