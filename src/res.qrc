@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>button_down.png</file>
         <file>button_up.png</file>
+        <file>wallpaper.png</file>
     </qresource>
 </RCC>

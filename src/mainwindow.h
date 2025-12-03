@@ -43,9 +43,12 @@ private:
     int G = 127; // Default Green
     int B = 127; // Default Blue
     int lastSensorValue = -1; // Sensor status indicator
+    bool pressed = false; //status for the DO lightsensor
 
-    int readSensorValue();
-    void handleSensorValue(int v); // UI Page manager
+    void togglePage(); // UI Page manager
+    int readSensorValue(); // Read the DO lightsensor value
+    int readAmbientLightValue(); //Read the AO lightsensor value
+    void updateDisplayBrightness(int raw); //adaptive brightness control
     void updateRedPanel(); // Update brightness value R
     void updateGreenPanel(); // Update brightness value G
     void updateBluePanel(); // Update brightness value B

@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page_config">
      <widget class="QGroupBox" name="groupBox">
@@ -92,7 +92,7 @@
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>button_up.png</normaloff>button_up.png</iconset>
+             <normaloff>:/button_up.png</normaloff>:/button_up.png</iconset>
            </property>
           </widget>
           <widget class="QPushButton" name="RedButton_down">
@@ -121,7 +121,7 @@
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>button_down.png</normaloff>button_down.png</iconset>
+             <normaloff>:/button_down.png</normaloff>:/button_down.png</iconset>
            </property>
           </widget>
           <widget class="QLabel" name="brightness_r">
@@ -184,7 +184,7 @@ background-color: transparent;
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>button_up.png</normaloff>button_up.png</iconset>
+             <normaloff>:/button_up.png</normaloff>:/button_up.png</iconset>
            </property>
           </widget>
           <widget class="QPushButton" name="GreenButton_down">
@@ -210,7 +210,7 @@ background-color: transparent;
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>button_down.png</normaloff>button_down.png</iconset>
+             <normaloff>:/button_down.png</normaloff>:/button_down.png</iconset>
            </property>
           </widget>
           <widget class="QLabel" name="brightness_g">
@@ -268,7 +268,7 @@ background-color: transparent;</string>
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>button_up.png</normaloff>button_up.png</iconset>
+             <normaloff>:/button_up.png</normaloff>:/button_up.png</iconset>
            </property>
           </widget>
           <widget class="QPushButton" name="BlueButton_down">
@@ -295,7 +295,7 @@ background-color: transparent;</string>
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>button_down.png</normaloff>button_down.png</iconset>
+             <normaloff>:/button_down.png</normaloff>:/button_down.png</iconset>
            </property>
           </widget>
           <widget class="QLabel" name="brightness_b">
@@ -325,10 +325,53 @@ background-color: transparent;</string>
       </widget>
      </widget>
     </widget>
-    <widget class="QWidget" name="page_display"/>
+    <widget class="QWidget" name="page_display">
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">
+
+</string>
+     </property>
+     <widget class="QLabel" name="screen">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>480</width>
+        <height>272</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:rgba(255, 255, 255, 0)</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="/">:/wallpaper.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QWidget" name="overlay" native="true">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>480</width>
+        <height>272</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
    </widget>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>

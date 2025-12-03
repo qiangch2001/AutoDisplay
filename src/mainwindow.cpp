@@ -1,5 +1,10 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <linux/i2c-dev.h>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -12,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     updateBluePanel();
 
     // Default UI page
-    ui->stackedWidget->setCurrentWidget(ui->page_config);
+    ui->stackedWidget->setCurrentWidget(ui->page_display);
 
     // Setup a timer to periodically listen to Page Switching signal
     sensorTimer = new QTimer(this);
@@ -23,20 +28,30 @@ MainWindow::MainWindow(QWidget *parent)
         int v = readSensorValue();
 
         if (v != lastSensorValue) {
+
+            // 0 -> 1：pressed but not released
+            if (lastSensorValue == 0 && v == 1) {
+                pressed = true;
+            }
+
+            // 1 -> 0：released
+            else if (lastSensorValue == 1 && v == 0) {
+
+                if (pressed) {
+                    togglePage();
+                    pressed = false; //reset status
+                }
+            }
+
             lastSensorValue = v;
-            handleSensorValue(v);
         }
+
+        int ambientRaw = readAmbientLightValue();
+        updateDisplayBrightness(ambientRaw);
+
     });
 
-
-    /* Test for page switching function */
-    // connect(sensorTimer, &QTimer::timeout, this, [this]() {
-    //     static int fake = 0;
-    //     fake = 1 - fake;
-    //     handleSensorValue(fake);
-    // });
-
-    sensorTimer->start(100); //Callback every 100ms
+    sensorTimer->start(200); //Callback every 200ms
 }
 
 MainWindow::~MainWindow()
@@ -48,7 +63,7 @@ MainWindow::~MainWindow()
 int MainWindow::readSensorValue()
 {
     // Check signal value
-    QFile f("/sys/class/gpio/gpio60/value");
+    QFile f("/sys/class/gpio/gpio20/value");
 
     if (!f.open(QIODevice::ReadOnly)) {
         qDebug() << "Failed to open sensor file";
@@ -62,22 +77,71 @@ int MainWindow::readSensorValue()
         return 0;
 }
 
-
-void MainWindow::handleSensorValue(int v)
+// Switch page
+void MainWindow::togglePage()
 {
-    if (v == 1) {
-        // Change to display page
+    if (ui->stackedWidget->currentWidget() == ui->page_config) {
         ui->stackedWidget->setCurrentWidget(ui->page_display);
     } else {
-        // Change to config page
         ui->stackedWidget->setCurrentWidget(ui->page_config);
     }
 }
 
+// Fetch BH1750's raw data
+int MainWindow::readAmbientLightValue()
+{
+    const char *dev = "/dev/i2c-2";
+
+    int addr = 0x23;
+    unsigned char cmd = 0x20;
+
+    // Add "::" to avoid using Qt's open funtion, same for close()
+    int fd = ::open(dev, O_RDWR);
+    // Set I2C slave address
+    ioctl(fd, I2C_SLAVE, addr);
+    // Send measurement command （continuously H-resolution mode）
+    ::write(fd, &cmd, 1);
+
+    // Wait for measurement to complete
+    usleep(150000);
+
+    // Read 2 bytes of data
+    unsigned char buf[2] = {0, 0};
+    ::read(fd, buf, 2);
+    ::close(fd);
+
+    // Shift and combine bytes
+    int raw = (buf[0] << 8) | buf[1];
+
+    return raw;
+}
+
+void MainWindow::updateDisplayBrightness(int raw)
+{
+    // Clamp raw value to [50, 550], by testing , normal dayight is around 500
+    if (raw < 50) raw = 50;
+    if (raw > 550) raw = 550;
+    // Map raw value [50, 550] to alpha [255, 0] and invert
+    int alpha =255 - raw * 255 / 550;
+
+    // Adjust only when on display page
+    if (ui->stackedWidget->currentWidget() != ui->page_display) {
+        return;
+    }
+
+    // black -> white
+    QString style = QString("background-color: rgba(0, 0, 0, %1);")
+                        .arg(alpha);
+
+    ui->overlay->setStyleSheet(style);
+
+}
+
+
 void MainWindow::updateRedPanel()
 {
     // set threshold for the brightness value
-    if (R < 0)   R = 0;
+    if (R < 0) R = 0;
     if (R > 255) R = 255;
 
     // set background color
@@ -90,7 +154,7 @@ void MainWindow::updateRedPanel()
 
 void MainWindow::updateGreenPanel()
 {
-    if (G < 0)   G = 0;
+    if (G < 0) G = 0;
     if (G > 255) G = 255;
 
     QString style =
@@ -101,7 +165,7 @@ void MainWindow::updateGreenPanel()
 
 void MainWindow::updateBluePanel()
 {
-    if (B < 0)   B = 0;
+    if (B < 0) B = 0;
     if (B > 255) B = 255;
 
     QString style =
